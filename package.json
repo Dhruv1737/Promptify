@@ -9,9 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.99.0",
+    "ai": "^6.0.191",
+    "bcryptjs": "^3.0.3",
+    "js-cookie": "^3.0.7",
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.2.0",
+    "mongodb-memory-server": "^11.1.0",
+    "mongoose": "^9.6.3",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
