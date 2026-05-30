@@ -46,7 +46,7 @@ function LoginForm() {
         <div className="auth-brand">
           <div className="auth-logo-circle">
             <Image
-              src="/logo.jpg"
+              src="/logo1.jpg"
               alt="Promptify"
               width={64}
               height={64}

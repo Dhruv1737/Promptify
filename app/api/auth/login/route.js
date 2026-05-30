@@ -35,6 +35,14 @@ export async function POST(request) {
       );
     }
 
+    // ── Check if verified ───────────────────────
+if (!user.isVerified) {
+  return NextResponse.json(
+    { error: "Please verify your email before logging in. Check your inbox." },
+    { status: 403 }
+  );
+}
+
     // --- Sign JWT & set cookie ---
     const token = signToken({
       id: user._id.toString(),

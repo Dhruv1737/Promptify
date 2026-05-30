@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
-import { signToken, setAuthCookie } from "@/lib/auth";
+import { sendVerificationEmail } from "@/lib/mailer";
 
 export async function POST(request) {
   try {
     const { name, email, password } = await request.json();
 
-    // --- Validation ---
+    // ── Validation ─────────────────────────────
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "All fields are required." },
@@ -24,7 +25,7 @@ export async function POST(request) {
 
     await connectDB();
 
-    // --- Check duplicate ---
+    // ── Check duplicate ─────────────────────────
     const existing = await User.findOne({ email });
     if (existing) {
       return NextResponse.json(
@@ -33,34 +34,33 @@ export async function POST(request) {
       );
     }
 
-    // --- Hash password ---
+    // ── Hash password ───────────────────────────
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // --- Create user ---
+    // ── Generate verify token ───────────────────
+    const verifyToken = crypto.randomBytes(32).toString("hex");
+    const verifyTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24hrs
+
+    // ── Create user ─────────────────────────────
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
+      verifyToken,
+      verifyTokenExpiry,
+      isVerified: false,
     });
 
-    // --- Sign JWT & set cookie ---
-    const token = signToken({
-      id: user._id.toString(),
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
+    // ── Send verification email ─────────────────
+    await sendVerificationEmail(name, email, verifyToken);
 
-    const response = NextResponse.json(
+    return NextResponse.json(
       {
         success: true,
-        user: { id: user._id, name: user.name, email: user.email },
+        message: "Account created! Please check your email to verify your account.",
       },
       { status: 201 }
     );
-
-    setAuthCookie(response, token);
-    return response;
 
   } catch (err) {
     console.error("[REGISTER ERROR]", err);
