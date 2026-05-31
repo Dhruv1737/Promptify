@@ -1336,3 +1336,938 @@
 .dash-tip strong {
   color: #f59e0b;
 }
+
+/* ── Resume / ATS Page ──────────────────────── */
+.resume-layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .resume-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resume-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.resume-label-hint {
+  font-size: 0.72rem;
+  color: #444;
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.resume-editor-wrap {
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.resume-textarea {
+  width: 100%;
+  min-height: 320px;
+  background: #0d0d14;
+  border: none;
+  padding: 1rem;
+  color: #e2e8f0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+}
+
+.resume-textarea::placeholder {
+  color: #2a2a3a;
+  font-size: 0.8rem;
+}
+
+/* ── ATS Preview ────────────────────────────── */
+.ats-preview {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.ats-preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+}
+
+.ats-preview-grid span {
+  font-size: 0.82rem;
+  color: #777;
+}
+
+/* ── Submit button ──────────────────────────── */
+.ats-submit-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  box-shadow: 0 4px 15px rgba(245,158,11,0.3) !important;
+}
+
+.ats-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 8px 25px rgba(245,158,11,0.45) !important;
+}
+
+/* ── Score Banner ───────────────────────────── */
+.ats-score-banner {
+  background: rgba(18,18,28,0.8);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.ats-score-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.ats-score-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid var(--score-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--score-color) 20%, transparent);
+}
+
+.ats-score-num {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ats-score-denom {
+  font-size: 0.65rem;
+  color: #555;
+}
+
+.ats-score-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.ats-score-sub {
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.ats-score-bar-wrap {
+  flex: 1;
+  min-width: 200px;
+}
+
+.ats-score-bar-track {
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.ats-score-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 1s ease;
+}
+
+.ats-score-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: #444;
+}
+
+/* ── Tips in empty state ────────────────────── */
+.ats-tips {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.ats-tips-title {
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.ats-tips ul {
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.ats-tips li {
+  font-size: 0.78rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+/* ── Feature Pages (shared) ─────────────────── */
+.feature-page {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.feature-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.feature-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.feature-header-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.feature-header-left h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.2rem;
+}
+
+.feature-header-left p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.feature-header-badge {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  color: #818cf8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  letter-spacing: 0.5px;
+}
+
+.feature-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 15px rgba(99,102,241,0.3);
+}
+
+.feature-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99,102,241,0.4);
+}
+
+.feature-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ── Debugger Layout ────────────────────────── */
+.debugger-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .debugger-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Input Column ───────────────────────────── */
+.debugger-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.debugger-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.debugger-toolbar label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+.debugger-select {
+  flex: 1;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.debugger-select:focus {
+  border-color: rgba(99,102,241,0.5);
+}
+
+.debugger-clear-btn {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #666;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.debugger-clear-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #aaa;
+}
+
+.debugger-editor-wrap {
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.debugger-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.debugger-char-count {
+  font-size: 0.72rem;
+  color: #444;
+}
+
+.debugger-textarea {
+  width: 100%;
+  min-height: 380px;
+  background: #0d0d14;
+  border: none;
+  padding: 1rem;
+  color: #e2e8f0;
+  font-family: "Fira Code", "Cascadia Code", "Consolas", monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+}
+
+.debugger-textarea::placeholder {
+  color: #2a2a3a;
+}
+
+/* ── Output Column ──────────────────────────── */
+.debugger-output-col {
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.output-copy-btn {
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.2);
+  color: #818cf8;
+  padding: 0.3rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.output-copy-btn:hover {
+  background: rgba(99,102,241,0.2);
+}
+
+.output-body {
+  flex: 1;
+  padding: 1.25rem;
+  overflow-y: auto;
+  background: #0d0d14;
+}
+
+.output-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.output-empty span:first-child {
+  font-size: 2.5rem;
+  opacity: 0.3;
+}
+
+.output-empty p {
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.output-empty-sub {
+  font-size: 0.78rem;
+  color: #333;
+}
+
+.output-error {
+  background: rgba(239,68,68,0.08);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+
+.output-result {
+  color: #cdd6f4;
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+.output-result h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.output-result h2:first-child {
+  margin-top: 0;
+}
+
+.output-result p {
+  margin-bottom: 0.75rem;
+  color: #888;
+}
+
+.output-result ul, .output-result ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #888;
+}
+
+.output-result li {
+  margin-bottom: 0.35rem;
+}
+
+.output-result strong {
+  color: #ccc;
+}
+
+.inline-code {
+  background: rgba(99,102,241,0.15);
+  color: #a5b4fc;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  font-family: monospace;
+}
+
+/* ── Study Page ─────────────────────────────── */
+.study-layout {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .study-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.study-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.study-topic-input {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.study-topic-input:focus {
+  border-color: rgba(168,85,247,0.5);
+  box-shadow: 0 0 0 3px rgba(168,85,247,0.1);
+}
+
+.study-topic-input::placeholder {
+  color: #333;
+}
+
+.study-context-toggle {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.2s;
+}
+
+.study-context-toggle:hover {
+  color: #888;
+}
+
+.study-context-toggle span {
+  color: #444;
+  font-size: 0.75rem;
+}
+
+.study-context-textarea {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  color: #fff;
+  font-size: 0.875rem;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  line-height: 1.6;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.study-context-textarea:focus {
+  border-color: rgba(168,85,247,0.5);
+}
+
+.study-context-textarea::placeholder {
+  color: #333;
+}
+
+/* ── What you'll get preview ────────────────── */
+.study-preview {
+  background: rgba(168,85,247,0.05);
+  border: 1px solid rgba(168,85,247,0.15);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+
+.study-preview-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.study-preview-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.study-preview-items span {
+  font-size: 0.82rem;
+  color: #777;
+}
+
+/* ── Form buttons row ───────────────────────── */
+.study-form-btns {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.study-form-btns .feature-submit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  box-shadow: 0 4px 15px rgba(168,85,247,0.3);
+}
+
+.study-form-btns .feature-submit-btn:hover:not(:disabled) {
+  box-shadow: 0 8px 25px rgba(168,85,247,0.4);
+}
+
+/* ── PDF Drop Zone ──────────────────────────── */
+.pdf-dropzone {
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255,255,255,0.02);
+}
+
+.pdf-dropzone:hover {
+  border-color: rgba(245,158,11,0.4);
+  background: rgba(245,158,11,0.03);
+}
+
+.pdf-dropzone--over {
+  border-color: rgba(245,158,11,0.6);
+  background: rgba(245,158,11,0.06);
+}
+
+.pdf-dropzone--filled {
+  border-style: solid;
+  border-color: rgba(245,158,11,0.3);
+  background: rgba(245,158,11,0.04);
+}
+
+.pdf-dropzone-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.pdf-upload-icon {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+.pdf-dropzone-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #888;
+}
+
+.pdf-dropzone-sub {
+  font-size: 0.78rem;
+  color: #444;
+}
+
+.pdf-dropzone-filled {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pdf-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.pdf-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.2rem;
+  word-break: break-all;
+}
+
+.pdf-size {
+  font-size: 0.75rem;
+  color: #4ade80;
+}
+
+.pdf-remove-btn {
+  margin-left: auto;
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.pdf-remove-btn:hover {
+  background: rgba(239,68,68,0.2);
+}
+
+/* ── Study Mode Toggle ──────────────────────── */
+.study-mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 0.35rem;
+  width: fit-content;
+}
+
+.study-mode-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.study-mode-btn:hover {
+  color: #aaa;
+  background: rgba(255,255,255,0.04);
+}
+
+.study-mode-btn.active {
+  background: rgba(168,85,247,0.15);
+  color: #c084fc;
+}
+
+/* ── Skeleton & Loaders ─────────────────────────────── */
+
+@keyframes skeletonShimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%           { transform: scale(1.0); opacity: 1;   }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Base skeleton ── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 600px 100%;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
+  display: block;
+}
+
+/* ── Skeleton card ── */
+.skeleton-card {
+  background: rgba(18,18,28,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Code skeleton ── */
+.skeleton-code-wrap {
+  background: #0d0d14;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.skeleton-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.02);
+}
+
+.skeleton-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.skeleton-code-body {
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+/* ── Study skeleton ── */
+.skeleton-study {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.skeleton-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 1rem 0;
+}
+
+.skeleton-quiz-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+/* ── Dot loader ── */
+.dot-loader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dot-loader span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6366f1;
+  animation: dotBounce 1.2s ease-in-out infinite;
+}
+
+.dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+/* ── Page loader ── */
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.page-loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-loader-logo {
+  font-size: 2rem;
+  animation: dotBounce 1.4s ease-in-out infinite;
+}
+
+.page-loader-inner p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* ── Spinner ── */
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgba(99,102,241,0.15);
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}

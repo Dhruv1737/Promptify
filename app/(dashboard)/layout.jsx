@@ -74,11 +74,11 @@ export default function DashboardLayout({ children }) {
             📚 Study
           </Link>
           <Link
-            href="/recommend"
-            className={`dash-nav-link ${pathname === "/recommend" ? "active" : ""}`}
-          >
-            💡 Recommend
-          </Link>
+  href="/resume"
+  className={`dash-nav-link ${pathname === "/resume" ? "active" : ""}`}
+>
+  📄 Resume
+</Link>
         </div> {/* ⚡ FIXED: Added the missing closing div for dash-nav-links here */}
 
         {/* Right — User + Logout */}

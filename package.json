@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.99.0",
+    "@google/generative-ai": "^0.24.1",
     "ai": "^6.0.191",
     "bcryptjs": "^3.0.3",
     "js-cookie": "^3.0.7",
@@ -19,6 +20,7 @@
     "mongoose": "^9.6.3",
     "next": "16.2.6",
     "nodemailer": "^8.0.9",
+    "openai": "^6.39.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-markdown": "^10.1.0",

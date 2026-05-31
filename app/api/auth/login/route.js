@@ -44,6 +44,7 @@ if (!user.isVerified) {
 }
 
     // --- Sign JWT & set cookie ---
+    // --- Sign JWT & set cookie ---
     const token = signToken({
       id: user._id.toString(),
       name: user.name,
@@ -51,16 +52,17 @@ if (!user.isVerified) {
       role: user.role,
     });
 
-    const response = NextResponse.json(
+    // ⚡ FIXED: Pass ONLY the token string directly into the function
+    await setAuthCookie(token);
+
+    // Create and return the response cleanly
+    return NextResponse.json(
       {
         success: true,
         user: { id: user._id, name: user.name, email: user.email },
       },
       { status: 200 }
     );
-
-    setAuthCookie(response, token);
-    return response;
 
   } catch (err) {
     console.error("[LOGIN ERROR]", err);
