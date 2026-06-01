@@ -1,11 +1,20 @@
 import { NextResponse } from "next/server";
-import { clearAuthCookie } from "@/lib/auth";
 
 export async function POST() {
   const response = NextResponse.json(
     { success: true, message: "Logged out." },
     { status: 200 }
   );
-  clearAuthCookie(response);
+
+  // ── Properly clear the cookie ──────────────
+  response.cookies.set("ai_hub_token", "", {
+    httpOnly:  true,
+    secure:    process.env.NODE_ENV === "production",
+    sameSite:  "lax",
+    path:      "/",           // ← must match original path
+    maxAge:    0,             // ← expire immediately
+    expires:   new Date(0),   // ← set to past date (belt + suspenders)
+  });
+
   return response;
 }

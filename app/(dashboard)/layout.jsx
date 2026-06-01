@@ -1,28 +1,25 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function DashboardLayout({ children }) {
   const { user, loading, logout } = useAuth();
-  const router = useRouter();
-  
-  // ⚡ FIXED: Moved usePathname inside the component so React can track it correctly
-  const pathname = usePathname();
+  const router                    = useRouter();
+  const pathname                  = usePathname();
 
-  // Protect all dashboard routes
   useEffect(() => {
+    // Only redirect when loading is DONE and user is null
     if (!loading && !user) {
       router.push("/login");
     }
   }, [user, loading, router]);
 
-  // Show spinner while checking auth
+  // Show spinner WHILE loading — prevents flash redirect
   if (loading) {
     return (
       <div className="dash-loading">
@@ -31,13 +28,11 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  // Don't render if not logged in
+  // Don't render dashboard if no user
   if (!user) return null;
 
   return (
     <div className="dash-shell">
-
-      {/* ── Top Navbar ──────────────────────── */}
       <nav className="dash-nav">
 
         {/* Left — Logo */}
@@ -74,12 +69,12 @@ export default function DashboardLayout({ children }) {
             📚 Study
           </Link>
           <Link
-  href="/resume"
-  className={`dash-nav-link ${pathname === "/resume" ? "active" : ""}`}
->
-  📄 Resume
-</Link>
-        </div> {/* ⚡ FIXED: Added the missing closing div for dash-nav-links here */}
+            href="/resume"
+            className={`dash-nav-link ${pathname === "/resume" ? "active" : ""}`}
+          >
+            📄 Resume
+          </Link>
+        </div>
 
         {/* Right — User + Logout */}
         <div className="dash-nav-user">
@@ -96,11 +91,9 @@ export default function DashboardLayout({ children }) {
 
       </nav>
 
-      {/* ── Page Content ────────────────────── */}
       <main className="dash-main">
         {children}
       </main>
-
     </div>
   );
 }

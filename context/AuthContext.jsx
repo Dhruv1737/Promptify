@@ -53,10 +53,17 @@ export function AuthProvider({ children }) {
   }
 
   async function logout() {
+  try {
     await fetch("/api/auth/logout", { method: "POST" });
+  } catch (err) {
+    console.error("Logout error:", err);
+  } finally {
+    // Clear state regardless of API response
     setUser(null);
-    router.push("/login");
+    // Force hard redirect — clears any cached state
+    window.location.href = "/login";
   }
+}
 
   return (
     <AuthContext.Provider value={{ user, loading, login, register, logout }}>
