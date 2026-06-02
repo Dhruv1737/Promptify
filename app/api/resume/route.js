@@ -4,22 +4,35 @@ import connectDB from "@/lib/mongodb";
 import History from "@/models/History";
 import { getSessionUser } from "@/lib/auth";
 import { SYSTEM_PROMPTS } from "@/lib/promptEngine";
+import { rateLimit } from "@/lib/rateLimit";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export async function POST(request) {
   try {
-    // ── 1. Auth check (Fixed variable names) ──────────────────────────
-    const user = await getSessionUser();
-    
-    if (!user) {
+    // ── Auth ────────────────────────────────
+    const session = await getSessionUser();
+    if (!session) {
       return NextResponse.json(
         { error: "Unauthorized. Please log in." },
         { status: 401 }
       );
     }
 
-    // ── 2. Parse form data (PDF + text) ────────
+    // ── Rate limit ──────────────────────────
+    const limit = await rateLimit(session.id, "resume");
+    if (!limit.allowed) {
+      return NextResponse.json(
+        {
+          error:       limit.message,
+          minutesLeft: limit.minutesLeft,
+          resetAt:     limit.resetAt,
+        },
+        { status: 429 }
+      );
+    }
+
+    // ── Input ───────────────────────────────
     const formData       = await request.formData();
     const pdfFile        = formData.get("resume");
     const jobDescription = formData.get("jobDescription") || "";
@@ -31,66 +44,54 @@ export async function POST(request) {
       );
     }
 
-    // ── 3. Convert PDF to base64 ───────────────
-    const pdfBuffer = await pdfFile.arrayBuffer();
-    const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
+    // ── Convert PDF ─────────────────────────
+    const pdfBase64 = Buffer.from(
+      await pdfFile.arrayBuffer()
+    ).toString("base64");
 
-    // ── 4. Build message for Gemini ────────────
     const userMessage = jobDescription
-      ? `Please analyze this resume. Here is the job description to tailor the analysis against:\n\n${jobDescription}`
-      : `Please analyze this resume. No job description provided — do a general ATS analysis.`;
+      ? `Analyze this resume against this job description:\n\n${jobDescription}`
+      : `Analyze this resume. No job description — do general ATS analysis.`;
 
-    // ── 5. Call Gemini with Free-Tier Guardrails ────────────────
+    // ── Gemini ──────────────────────────────
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       systemInstruction: SYSTEM_PROMPTS.ats,
     });
 
-    let output;
-    try {
-      const result = await model.generateContent([
-        {
-          inlineData: {
-            mimeType: "application/pdf",
-            data:     pdfBase64,
-          },
-        },
-        { text: userMessage },
-      ]);
-      output = result.response.text();
-    } catch (geminiErr) {
-      // Catch Google API 429 Quota Exceeded exceptions seamlessly
-      if (geminiErr.status === 429 || geminiErr.message?.includes("429")) {
-        return NextResponse.json(
-          { error: "Gemini Free-Tier quota exceeded. Please wait 60 seconds before trying again!" },
-          { status: 429 }
-        );
-      }
-      throw geminiErr; // Pass structural or internal exceptions to outer catch block
-    }
+    const result = await model.generateContent([
+      { inlineData: { mimeType: "application/pdf", data: pdfBase64 } },
+      userMessage,
+    ]);
 
-    // ── 6. Extract score ───────────────────────
+    const output     = result.response.text();
     const scoreMatch = output.match(/(\d+)\s*\/\s*100/);
     const score      = scoreMatch ? parseInt(scoreMatch[1]) : null;
 
-    // ── 7. Save to history database ─────────────────────
+    // ── History ─────────────────────────────
     await connectDB();
     await History.create({
-      userId: user.id,
-      type:   "debugger", // 💡 Note: Your nav states this route is 'debugger', updated here to match your analytics schema
-      input:  `Resume PDF uploaded${jobDescription ? " with JD" : ""}`,
+      userId: session.id,
+      type:   "recommend",
+      input:  `Resume PDF${jobDescription ? " with JD" : ""}`,
       output,
     });
 
     return NextResponse.json(
-      { success: true, output, score },
+      {
+        success:   true,
+        output,
+        score,
+        remaining: limit.remaining,
+        limit:     limit.limit,
+      },
       { status: 200 }
     );
 
   } catch (err) {
     console.error("[ATS ERROR]", err);
     return NextResponse.json(
-      { error: "Failed to analyze resume due to an internal processing error." },
+      { error: "Failed to analyze resume. Please try again." },
       { status: 500 }
     );
   }
