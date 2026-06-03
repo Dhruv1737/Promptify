@@ -13,30 +13,24 @@ const SUBJECTS = [
 ];
 
 export default function StudyPage() {
-  // ── Mode ─────────────────────────────────
-  const [mode, setMode]             = useState("text"); // "text" | "pdf"
-
-  // ── Text mode state ───────────────────────
-  const [subject, setSubject]       = useState("");
-  const [topic, setTopic]           = useState("");
-  const [context, setContext]       = useState("");
+  const [mode, setMode]               = useState("text");
+  const [subject, setSubject]         = useState("");
+  const [topic, setTopic]             = useState("");
+  const [context, setContext]         = useState("");
   const [showContext, setShowContext] = useState(false);
+  const [pdfFile, setPdfFile]         = useState(null);
+  const [pdfName, setPdfName]         = useState("");
+  const [pdfTopic, setPdfTopic]       = useState("");
+  const [pdfContext, setPdfContext]   = useState("");
+  const [dragOver, setDragOver]       = useState(false);
+  const [output, setOutput]           = useState("");
+  const [error, setError]             = useState("");
+  const [loading, setLoading]         = useState(false);
+  const [copied, setCopied]           = useState(false);
+  const [remaining, setRemaining]     = useState(null);
+  const [totalLimit, setTotalLimit]   = useState(null);
+  const fileInputRef                  = useRef(null);
 
-  // ── PDF mode state ────────────────────────
-  const [pdfFile, setPdfFile]       = useState(null);
-  const [pdfName, setPdfName]       = useState("");
-  const [pdfTopic, setPdfTopic]     = useState("");
-  const [pdfContext, setPdfContext] = useState("");
-  const [dragOver, setDragOver]     = useState(false);
-  const fileInputRef                = useRef(null);
-
-  // ── Shared state ──────────────────────────
-  const [output, setOutput]         = useState("");
-  const [error, setError]           = useState("");
-  const [loading, setLoading]       = useState(false);
-  const [copied, setCopied]         = useState(false);
-
-  // ── PDF handlers ──────────────────────────
   function handleFileChange(file) {
     if (!file) return;
     if (file.type !== "application/pdf") {
@@ -53,13 +47,6 @@ export default function StudyPage() {
     setOutput("");
   }
 
-  function handleDrop(e) {
-    e.preventDefault();
-    setDragOver(false);
-    handleFileChange(e.dataTransfer.files[0]);
-  }
-
-  // ── Submit ────────────────────────────────
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
@@ -70,20 +57,16 @@ export default function StudyPage() {
       let res;
 
       if (mode === "pdf") {
-        // ── PDF mode: FormData ──────────────
         if (!pdfFile) throw new Error("Please upload a PDF file.");
-
         const formData = new FormData();
         formData.append("pdf",     pdfFile);
         formData.append("topic",   pdfTopic);
         formData.append("context", pdfContext);
-
         res = await fetch("/api/study", {
           method: "POST",
           body:   formData,
         });
       } else {
-        // ── Text mode: JSON ─────────────────
         res = await fetch("/api/study", {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
@@ -92,8 +75,18 @@ export default function StudyPage() {
       }
 
       const data = await res.json();
+
+      // ── Handle rate limit ─────────────────
+      if (res.status === 429) {
+        setError(data.error);
+        return;
+      }
+
       if (!res.ok) throw new Error(data.error);
+
       setOutput(data.output);
+      setRemaining(data.remaining);
+      setTotalLimit(data.limit);
 
     } catch (err) {
       setError(err.message);
@@ -163,7 +156,6 @@ export default function StudyPage() {
 
             {/* ── TEXT MODE ─────────────────── */}
             {mode === "text" && (<>
-
               <div className="form-group">
                 <label htmlFor="subject">Subject</label>
                 <select
@@ -214,16 +206,13 @@ export default function StudyPage() {
                   />
                 </div>
               )}
-
             </>)}
 
             {/* ── PDF MODE ──────────────────── */}
             {mode === "pdf" && (<>
-
-              {/* Drop zone */}
               <div
                 className={`pdf-dropzone ${dragOver ? "pdf-dropzone--over" : ""} ${pdfFile ? "pdf-dropzone--filled" : ""}`}
-                onDrop={handleDrop}
+                onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFileChange(e.dataTransfer.files[0]); }}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
                 onClick={() => fileInputRef.current?.click()}
@@ -261,7 +250,6 @@ export default function StudyPage() {
                 )}
               </div>
 
-              {/* Focus topic */}
               <div className="form-group">
                 <label htmlFor="pdfTopic">
                   Focus Topic
@@ -272,12 +260,11 @@ export default function StudyPage() {
                   type="text"
                   value={pdfTopic}
                   onChange={(e) => setPdfTopic(e.target.value)}
-                  placeholder="e.g. Chapter 3, Recursion, The French Revolution..."
+                  placeholder="e.g. Chapter 3, Recursion..."
                   className="study-topic-input"
                 />
               </div>
 
-              {/* Extra context */}
               <div className="form-group">
                 <label htmlFor="pdfContext">
                   Extra Context
@@ -287,12 +274,11 @@ export default function StudyPage() {
                   id="pdfContext"
                   value={pdfContext}
                   onChange={(e) => setPdfContext(e.target.value)}
-                  placeholder="e.g. I'm preparing for finals, focus on key formulas..."
+                  placeholder="e.g. I'm preparing for finals..."
                   className="study-context-textarea"
                   rows={3}
                 />
               </div>
-
             </>)}
 
             {/* ── What you'll get ────────────── */}
@@ -338,6 +324,30 @@ export default function StudyPage() {
                 )}
               </button>
             </div>
+
+            {/* ── Rate limit display ─────────── */}
+            {remaining !== null && (
+              <div className="rate-limit-info">
+                <div className="rate-limit-bar">
+                  {Array.from({ length: totalLimit }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`rate-limit-pip ${
+                        i < (totalLimit - remaining) ? "used" : "available"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p>
+                  <strong style={{
+                    color: remaining === 0 ? "#f87171" : "#c084fc"
+                  }}>
+                    {remaining}
+                  </strong>
+                  {" "}/ {totalLimit} study guides left this hour
+                </p>
+              </div>
+            )}
 
           </form>
         </div>

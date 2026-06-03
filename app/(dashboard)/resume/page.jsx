@@ -5,17 +5,19 @@ import ReactMarkdown from "react-markdown";
 import { SkeletonStudy } from "@/components/ui/LoadingSpinner";
 
 export default function ResumePage() {
-  const [pdfFile, setPdfFile]               = useState(null);
-  const [pdfName, setPdfName]               = useState("");
+  const [pdfFile, setPdfFile]             = useState(null);
+  const [pdfName, setPdfName]             = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [output, setOutput]                 = useState("");
-  const [error, setError]                   = useState("");
-  const [loading, setLoading]               = useState(false);
-  const [copied, setCopied]                 = useState(false);
-  const [showJD, setShowJD]                 = useState(false);
-  const [score, setScore]                   = useState(null);
-  const [dragOver, setDragOver]             = useState(false);
-  const fileInputRef                        = useRef(null);
+  const [output, setOutput]               = useState("");
+  const [error, setError]                 = useState("");
+  const [loading, setLoading]             = useState(false);
+  const [copied, setCopied]               = useState(false);
+  const [showJD, setShowJD]               = useState(false);
+  const [score, setScore]                 = useState(null);
+  const [dragOver, setDragOver]           = useState(false);
+  const [remaining, setRemaining]         = useState(null);
+  const [totalLimit, setTotalLimit]       = useState(null);
+  const fileInputRef                      = useRef(null);
 
   function handleFileChange(file) {
     if (!file) return;
@@ -34,22 +36,6 @@ export default function ResumePage() {
     setScore(null);
   }
 
-  function handleDrop(e) {
-    e.preventDefault();
-    setDragOver(false);
-    const file = e.dataTransfer.files[0];
-    handleFileChange(file);
-  }
-
-  function handleDragOver(e) {
-    e.preventDefault();
-    setDragOver(true);
-  }
-
-  function handleDragLeave() {
-    setDragOver(false);
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     if (!pdfFile) return;
@@ -59,7 +45,6 @@ export default function ResumePage() {
     setLoading(true);
 
     try {
-      // ── Send as FormData ──────────────────
       const formData = new FormData();
       formData.append("resume",         pdfFile);
       formData.append("jobDescription", jobDescription);
@@ -70,10 +55,20 @@ export default function ResumePage() {
       });
 
       const data = await res.json();
+
+      // ── Handle rate limit ─────────────────
+      if (res.status === 429) {
+        setError(data.error);
+        return;
+      }
+
       if (!res.ok) throw new Error(data.error);
 
       setScore(data.score);
       setOutput(data.output);
+      setRemaining(data.remaining);
+      setTotalLimit(data.limit);
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -94,15 +89,15 @@ export default function ResumePage() {
     setOutput("");
     setError("");
     setScore(null);
+    setRemaining(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
-  // Score styling
   const scoreColor =
-    !score      ? "#666"     :
-    score >= 80 ? "#4ade80"  :
-    score >= 60 ? "#f59e0b"  :
-    score >= 40 ? "#fb923c"  :
+    !score      ? "#666"    :
+    score >= 80 ? "#4ade80" :
+    score >= 60 ? "#f59e0b" :
+    score >= 40 ? "#fb923c" :
     "#f87171";
 
   const scoreLabel =
@@ -180,9 +175,9 @@ export default function ResumePage() {
             {/* ── PDF Drop Zone ─────────────── */}
             <div
               className={`pdf-dropzone ${dragOver ? "pdf-dropzone--over" : ""} ${pdfFile ? "pdf-dropzone--filled" : ""}`}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
+              onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFileChange(e.dataTransfer.files[0]); }}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+              onDragLeave={() => setDragOver(false)}
               onClick={() => fileInputRef.current?.click()}
             >
               <input
@@ -192,9 +187,7 @@ export default function ResumePage() {
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e.target.files[0])}
               />
-
               {pdfFile ? (
-                // File selected state
                 <div className="pdf-dropzone-filled">
                   <span className="pdf-icon">📄</span>
                   <div>
@@ -206,21 +199,13 @@ export default function ResumePage() {
                   <button
                     type="button"
                     className="pdf-remove-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleClear();
-                    }}
-                  >
-                    ✕
-                  </button>
+                    onClick={(e) => { e.stopPropagation(); handleClear(); }}
+                  >✕</button>
                 </div>
               ) : (
-                // Empty state
                 <div className="pdf-dropzone-empty">
                   <span className="pdf-upload-icon">⬆️</span>
-                  <p className="pdf-dropzone-title">
-                    Drop your resume here
-                  </p>
+                  <p className="pdf-dropzone-title">Drop your resume here</p>
                   <p className="pdf-dropzone-sub">
                     or click to browse · PDF only · Max 10MB
                   </p>
@@ -290,6 +275,30 @@ export default function ResumePage() {
               </button>
             </div>
 
+            {/* ── Rate limit display ─────────── */}
+            {remaining !== null && (
+              <div className="rate-limit-info">
+                <div className="rate-limit-bar">
+                  {Array.from({ length: totalLimit }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`rate-limit-pip ${
+                        i < (totalLimit - remaining) ? "used" : "available"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p>
+                  <strong style={{
+                    color: remaining === 0 ? "#f87171" : "#fbbf24"
+                  }}>
+                    {remaining}
+                  </strong>
+                  {" "}/ {totalLimit} resume analysis left this hour
+                </p>
+              </div>
+            )}
+
           </form>
         </div>
 
@@ -305,7 +314,7 @@ export default function ResumePage() {
           </div>
 
           <div className="output-body">
-            {loading  && <SkeletonStudy />}
+            {loading && <SkeletonStudy />}
 
             {error && !loading && (
               <div className="output-error">❌ {error}</div>

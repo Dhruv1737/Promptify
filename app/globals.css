@@ -2307,3 +2307,26 @@
   font-size: 0.78rem;
   color: #555;
 }
+
+/* ── Dropdown Options Fix ───────────────────── */
+.debugger-select option {
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.debugger-select {
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  color: #fff;
+  font-size: 0.85rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  appearance: auto;
+}
+
+.debugger-select:focus {
+  border-color: rgba(99,102,241,0.5);
+}

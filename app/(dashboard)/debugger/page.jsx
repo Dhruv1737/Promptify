@@ -13,12 +13,14 @@ const LANGUAGES = [
 ];
 
 export default function DebuggerPage() {
-  const [code, setCode]         = useState("");
-  const [language, setLanguage] = useState("Auto Detect");
-  const [output, setOutput]     = useState("");
-  const [error, setError]       = useState("");
-  const [loading, setLoading]   = useState(false);
-  const [copied, setCopied]     = useState(false);
+  const [code, setCode]           = useState("");
+  const [language, setLanguage]   = useState("Auto Detect");
+  const [output, setOutput]       = useState("");
+  const [error, setError]         = useState("");
+  const [loading, setLoading]     = useState(false);
+  const [copied, setCopied]       = useState(false);
+  const [remaining, setRemaining] = useState(null);
+  const [totalLimit, setTotalLimit] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -36,9 +38,21 @@ export default function DebuggerPage() {
           language: language === "Auto Detect" ? null : language,
         }),
       });
+
       const data = await res.json();
+
+      // ── Handle rate limit ─────────────────
+      if (res.status === 429) {
+        setError(data.error);
+        return;
+      }
+
       if (!res.ok) throw new Error(data.error);
+
       setOutput(data.output);
+      setRemaining(data.remaining);
+      setTotalLimit(data.limit);
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -70,8 +84,12 @@ export default function DebuggerPage() {
             <p>Paste your broken code and get a production-ready fix with full explanations</p>
           </div>
         </div>
-        <div className="feature-header-badge">
-          Senior Engineer Prompt
+        <div className="feature-header-badge" style={{
+          background:  "rgba(66,133,244,0.1)",
+          borderColor: "rgba(66,133,244,0.25)",
+          color:       "#60a5fa",
+        }}>
+          ⚡ Powered by Gemini
         </div>
       </div>
 
@@ -137,6 +155,30 @@ export default function DebuggerPage() {
               )}
             </button>
 
+            {/* ── Rate limit display ─────────── */}
+            {remaining !== null && (
+              <div className="rate-limit-info">
+                <div className="rate-limit-bar">
+                  {Array.from({ length: totalLimit }).map((_, i) => (
+                    <div
+                      key={i}
+                      className={`rate-limit-pip ${
+                        i < (totalLimit - remaining) ? "used" : "available"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p>
+                  <strong style={{
+                    color: remaining === 0 ? "#f87171" : "#818cf8"
+                  }}>
+                    {remaining}
+                  </strong>
+                  {" "}/ {totalLimit} debug requests left this hour
+                </p>
+              </div>
+            )}
+
           </form>
         </div>
 
@@ -152,17 +194,12 @@ export default function DebuggerPage() {
           </div>
 
           <div className="output-body">
-            {/* Loading skeleton */}
             {loading && <SkeletonCode />}
 
-            {/* Error */}
             {error && !loading && (
-              <div className="output-error">
-                ❌ {error}
-              </div>
+              <div className="output-error">❌ {error}</div>
             )}
 
-            {/* Empty state */}
             {!loading && !output && !error && (
               <div className="output-empty">
                 <span>🐛</span>
@@ -173,7 +210,6 @@ export default function DebuggerPage() {
               </div>
             )}
 
-            {/* Result */}
             {output && !loading && (
               <div className="output-result">
                 <ReactMarkdown
