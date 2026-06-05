@@ -39,7 +39,7 @@ export default function HomePage() {
         />
         <div className="hero-badge">
           <span className="hero-badge-dot" />
-          Powered by AI
+          Powered by Gemini AI
         </div>
         <h1 className="hero-title">
           Stop Writing <span className="gradient-text">Bad Prompts.</span>
@@ -47,7 +47,7 @@ export default function HomePage() {
           Start Getting Great Results.
         </h1>
         <p className="hero-subtitle">
-          AI Hub automatically wraps your simple inputs inside elite-level
+          Promptify automatically wraps your simple inputs inside elite-level
           system instructions — so you always get expert-grade outputs without
           knowing how to prompt.
         </p>
@@ -83,13 +83,16 @@ export default function HomePage() {
       <section className="features">
         <div className="features-header">
           <span className="features-eyebrow">What's inside</span>
-          <h2 className="features-title">Everything you need. Nothing you don't.</h2>
+          <h2 className="features-title">
+            Everything you need. Nothing you don't.
+          </h2>
         </div>
         <div className="features-grid">
 
+          {/* Debugger */}
           <div className="feature-card">
             <div className="feature-card-top">
-              <div className="feature-icon-wrap" style={{"--icon-color":"#6366f1"}}>
+              <div className="feature-icon-wrap" style={{ "--icon-color": "#6366f1" }}>
                 🐛
               </div>
               <span className="feature-tag">Engineer-grade</span>
@@ -104,34 +107,36 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* Study */}
           <div className="feature-card feature-card--highlight">
             <div className="feature-card-top">
-              <div className="feature-icon-wrap" style={{"--icon-color":"#a855f7"}}>
+              <div className="feature-icon-wrap" style={{ "--icon-color": "#a855f7" }}>
                 📚
               </div>
               <span className="feature-tag feature-tag--purple">Most popular</span>
             </div>
             <h3>Study Assistant</h3>
             <p>
-              Pick any subject and topic. Get a full structured study guide,
-              real-world analogies, and a mini-quiz — instantly.
+              Pick any subject and topic — or upload your PDF notes. Get a full
+              structured study guide, real-world analogies, and a mini-quiz instantly.
             </p>
             <div className="feature-card-footer">
               <Link href="/register" className="feature-link">Try it →</Link>
             </div>
           </div>
 
+          {/* ATS Resume */}
           <div className="feature-card">
             <div className="feature-card-top">
-              <div className="feature-icon-wrap" style={{"--icon-color":"#f59e0b"}}>
-                💡
+              <div className="feature-icon-wrap" style={{ "--icon-color": "#f59e0b" }}>
+                📄
               </div>
-              <span className="feature-tag">Strategic AI</span>
+              <span className="feature-tag">HR Expert Prompt</span>
             </div>
-            <h3>Recommendation Engine</h3>
+            <h3>ATS Resume Checker</h3>
             <p>
-              Input any project idea or dilemma. Get structured recommendations
-              with pros, cons, risks, and your first action step.
+              Upload your resume PDF and get an ATS compatibility score, missing
+              keywords, formatting fixes, and an AI-optimized summary instantly.
             </p>
             <div className="feature-card-footer">
               <Link href="/register" className="feature-link">Try it →</Link>
@@ -162,7 +167,7 @@ export default function HomePage() {
           style={{ objectFit: "contain", opacity: 0.3 }}
           className="landing-logo-img"
         />
-        <p>Built with Next.js · MongoDB · AI</p>
+        <p>Built with Next.js · MongoDB · Gemini AI</p>
         <div className="footer-links">
           <a href="#">Privacy</a>
           <a href="#">Terms</a>
